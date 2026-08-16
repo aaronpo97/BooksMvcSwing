@@ -105,7 +105,63 @@ The source under `src/main/java/booksapp` follows an MVC split:
 - [mvc/BooksView](src/main/java/booksapp/mvc/BooksView.java) — the `JFrame` UI: a country dropdown, a Find button, and a results table, laid out with `GroupLayout`.
 - [mvc/BooksController](src/main/java/booksapp/mvc/BooksController.java) — an `ActionListener` that loads the country list into the view on startup and, on Find, queries the model and pushes results into the table.
 - [domain/Book](src/main/java/booksapp/domain/Book.java) — an immutable record (`name`, `description`, `genres`, `authors`, `country`) representing one query result row.
-- [ui/components/PlaceholderTextField](src/main/java/booksapp/ui/components/PlaceholderTextField.java) — a `JTextField` subclass that paints hint text while empty.
+
+```mermaid
+classDiagram
+    class BooksApp {
+        +main(String[] args) void
+    }
+    class BooksView {
+        -JLabel label
+        -JTable _table
+        -JComboBox~String~ _selectField
+        -JButton _findButton
+        +BooksView()
+        +trySetTableModel(TableModel) boolean
+        +getSelectField() JComboBox~String~
+        +getFindButton() JButton
+    }
+    class BooksController {
+        -BooksView _view
+        -BookModel _bookModel
+        -ArrayList~String~ _countries
+        +BooksController(BooksView, BookModel)
+        +actionPerformed(ActionEvent) void
+    }
+    class BookModel {
+        -Connection _connection
+        +BookModel()
+        +findByCountry(String country) List~Book~
+        +findAllCountryNames() List~String~
+        +close() void
+    }
+    class Book {
+        <<record>>
+        +String name
+        +String description
+        +String genres
+        +String authors
+        +String country
+    }
+    class JFrame
+    class ActionListener {
+        <<interface>>
+    }
+    class AutoCloseable {
+        <<interface>>
+    }
+
+    BooksApp ..> BooksView : creates
+    BooksApp ..> BookModel : creates
+    BooksApp ..> BooksController : creates
+    BooksController --> BooksView : controls
+    BooksController --> BookModel : queries
+    BooksController ..> Book : uses
+    BookModel ..> Book : creates
+    JFrame <|-- BooksView
+    ActionListener <|.. BooksController
+    AutoCloseable <|.. BookModel
+```
 
 ## License
 
