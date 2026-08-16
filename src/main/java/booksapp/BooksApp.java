@@ -14,22 +14,18 @@ import booksapp.mvc.BooksView;
 
 public class BooksApp {
 
-    private static final String DB_URL = "jdbc:sqlite:data/books.db";
-
     public static void main(String[] args) {
         try {
-            try {
-                UIManager.setLookAndFeel(new FlatDarkLaf());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            Connection connection = DriverManager.getConnection(DB_URL);
-            BookModel model = new BookModel(connection);
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+
+            BookModel model = new BookModel();
             BooksView view = new BooksView();
+
             new BooksController(view, model);
+            
             SwingUtilities.invokeLater(() -> view.setVisible(true));
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 

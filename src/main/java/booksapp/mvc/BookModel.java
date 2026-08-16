@@ -1,6 +1,7 @@
 package booksapp.mvc;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,9 +13,10 @@ import booksapp.domain.Book;
 public class BookModel implements AutoCloseable {
 
     private final Connection _connection;
+    final static String DB_URL = "jdbc:sqlite:data/books.db";
 
-    public BookModel(Connection connection) {
-        _connection = connection;
+    public BookModel() throws SQLException {
+        _connection = DriverManager.getConnection(DB_URL);
     }
 
     public List<Book> findByCountry(String country) throws SQLException {
@@ -64,8 +66,7 @@ public class BookModel implements AutoCloseable {
                             resultSet.getString("book_description"),
                             resultSet.getString("genres"),
                             resultSet.getString("authors"),
-                            resultSet.getString("country_name")
-                    ));
+                            resultSet.getString("country_name")));
                 }
             }
         }
@@ -84,7 +85,7 @@ public class BookModel implements AutoCloseable {
 
         List<String> countries = new ArrayList<>();
         try (PreparedStatement statement = _connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 countries.add(resultSet.getString("country_name"));
             }
