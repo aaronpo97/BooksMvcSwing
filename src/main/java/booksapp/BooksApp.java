@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import booksapp.mvc.BookModel;
@@ -17,7 +18,7 @@ public class BooksApp {
     public static void main(String[] args) {
         try {
 
-            UIManager.setLookAndFeel(new FlatDarkLaf());
+            UIManager.setLookAndFeel(new FlatDarculaLaf());
 
             BookModel model = new BookModel();
             BooksView view = new BooksView();

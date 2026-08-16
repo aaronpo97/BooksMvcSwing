@@ -47,10 +47,11 @@ The application reads from `data/books.db`, an existing SQLite database committe
 
 ```mermaid
 erDiagram
-    COUNTRY ||--o{ AUTHOR_NATIONALITY : has
-    AUTHOR ||--o{ AUTHOR_NATIONALITY : holds
-    AUTHOR ||--o{ BOOK_AUTHOR : writes
-    BOOK ||--o{ BOOK_AUTHOR : has
+    COUNTRY ||--o{ CONTRIBUTOR_NATIONALITY : has
+    CONTRIBUTOR ||--o{ CONTRIBUTOR_NATIONALITY : holds
+    CONTRIBUTOR ||--o{ BOOK_CONTRIBUTOR : contributes
+    CONTRIBUTOR_TYPE ||--o{ BOOK_CONTRIBUTOR : classifies
+    BOOK ||--o{ BOOK_CONTRIBUTOR : has
     BOOK ||--o{ BOOK_GENRE : has
     GENRE ||--o{ BOOK_GENRE : has
 
@@ -58,13 +59,17 @@ erDiagram
         int country_id PK
         string country_name
     }
-    AUTHOR {
-        int author_id PK
-        string author_name
+    CONTRIBUTOR {
+        int contributor_id PK
+        string contributor_name
     }
-    AUTHOR_NATIONALITY {
-        int author_nationality_id PK
-        int author_id FK
+    CONTRIBUTOR_TYPE {
+        int contributor_type_id PK
+        string type_name
+    }
+    CONTRIBUTOR_NATIONALITY {
+        int contributor_nationality_id PK
+        int contributor_id FK
         int country_id FK
     }
     GENRE {
@@ -76,10 +81,11 @@ erDiagram
         string book_name
         string book_description
     }
-    BOOK_AUTHOR {
-        int book_author_id PK
+    BOOK_CONTRIBUTOR {
+        int book_contributor_id PK
         int book_id FK
-        int author_id FK
+        int contributor_id FK
+        int contributor_type_id FK
         string contribution_description
     }
     BOOK_GENRE {
