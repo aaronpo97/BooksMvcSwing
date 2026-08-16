@@ -61,7 +61,7 @@ public class BooksController implements ActionListener {
     }
 
     private TableModel toTableModel(List<Book> books) {
-        Vector<String> columnNames = new Vector<>(List.of("book_name", "book_description", "genres", "authors", "country_name"));
+        Vector<String> columnNames = new Vector<>(List.of("book_name", "book_description", "genres", "contributors", "country_name"));
         Vector<Vector<Object>> rows = new Vector<>();
 
         for (Book book : books) {
@@ -69,7 +69,7 @@ public class BooksController implements ActionListener {
             row.add(book.name());
             row.add(book.description());
             row.add(book.genres());
-            row.add(book.authors());
+            row.add(book.contributors());
             row.add(book.country());
             rows.add(row);
         }

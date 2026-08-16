@@ -26,8 +26,8 @@ public class BookModel implements AutoCloseable {
                     b.book_description,
                     GROUP_CONCAT(DISTINCT g.genre_name)
                         AS genres,
-                    GROUP_CONCAT(DISTINCT a.author_name)
-                        AS authors,
+                    GROUP_CONCAT(DISTINCT ctr.contributor_name || ' (' || ct.type_name || ')')
+                        AS contributors,
                     GROUP_CONCAT(DISTINCT c.country_name)
                         AS country_name
                 FROM Book b
@@ -36,18 +36,20 @@ public class BookModel implements AutoCloseable {
                 LEFT JOIN
                     Genre g ON bg.genre_id = g.genre_id
                 LEFT JOIN
-                    BookAuthor ba ON ba.book_id = b.book_id
+                    BookContributor bc ON bc.book_id = b.book_id
                 LEFT JOIN
-                    Author a ON ba.author_id = a.author_id
+                    Contributor ctr ON bc.contributor_id = ctr.contributor_id
                 LEFT JOIN
-                    AuthorNationality an ON an.author_id = a.author_id
+                    ContributorType ct ON bc.contributor_type_id = ct.contributor_type_id
                 LEFT JOIN
-                    Country c ON an.country_id = c.country_id
+                    ContributorNationality cn ON cn.contributor_id = ctr.contributor_id
+                LEFT JOIN
+                    Country c ON cn.country_id = c.country_id
                 WHERE b.book_id IN (
-                    SELECT ba2.book_id
-                    FROM BookAuthor ba2
-                    JOIN AuthorNationality an2 ON an2.author_id = ba2.author_id
-                    JOIN Country c2 ON c2.country_id = an2.country_id
+                    SELECT bc2.book_id
+                    FROM BookContributor bc2
+                    JOIN ContributorNationality cn2 ON cn2.contributor_id = bc2.contributor_id
+                    JOIN Country c2 ON c2.country_id = cn2.country_id
                     WHERE c2.country_name = ?
                 )
                 GROUP BY
@@ -65,7 +67,7 @@ public class BookModel implements AutoCloseable {
                             resultSet.getString("book_name"),
                             resultSet.getString("book_description"),
                             resultSet.getString("genres"),
-                            resultSet.getString("authors"),
+                            resultSet.getString("contributors"),
                             resultSet.getString("country_name")));
                 }
             }
